@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.crngObj": "json",
+        "*.crngScn": "json",
+        "sstream": "cpp"
+    }
+}
