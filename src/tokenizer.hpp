@@ -75,7 +75,7 @@ private:
             if(current == '\'' && !(commentMode || stringMode || escapeMode)){
                 if(charMode){
                     charMode = false;
-                    if(currentToken.length() != 1){
+                    if(currentToken.length() != 1 && !(currentToken.length() == 2 && currentToken.at(0) == '\\')){
                         cerr << "The length of a character should exactly be 1.";
                         throw invalid_argument("The length of the character should exactly be 1.");
                     }// if the given character token does not have one character, then it is invalid.
@@ -107,9 +107,41 @@ private:
                 tokens.push_back(Token(type));
                 continue;
             }// pushing in whitespaces
-
+            if(escapeMode){
+                switch (current)
+                {
+                case 'n':
+                    current = '\n';
+                    break;
+                case 't':
+                    current = '\t';
+                    break;
+                case 'r':
+                    current = '\r';
+                    break;
+                case 'b':
+                    current = '\b';
+                    break;
+                case 'v':
+                    current = '\v';
+                    break;
+                case 'f':
+                    current = '\f';
+                    break;
+                case '0':
+                    current = '\0';
+                    break;
+                case '\'':
+                    break;
+                case '"':
+                    break;
+                default:
+                    cerr << "Invalid character after \\ (escape character).";
+                    throw invalid_argument("Invalid character after \\ (escape character).");
+                }
+                escapeMode = false;
+            }
             currentToken.push_back(current);
-            escapeMode = false;
         }
     }
 
