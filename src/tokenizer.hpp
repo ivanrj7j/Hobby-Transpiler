@@ -58,7 +58,6 @@ private:
                     stringMode = false;
                     tokens.push_back(Token(LiteralType{_stringLit}, currentToken));
                     currentToken.clear();
-                    printTokens();
                     // if stringmode is on and " is found, it means the string is ending
                 }else{
                     currentToken.clear(); // TODO: have better error handling, this will cause problems in future, here just for initial testing purposes
@@ -102,8 +101,6 @@ private:
 
             currentToken.push_back(current);
             escapeMode = false;
-            
-            cout << "Parsed '" << current << endl;
         }
     }
 
