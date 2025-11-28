@@ -4,3 +4,5 @@
 str first = "Hello world!"
 str second = "#Hello world"
 str third = "'Hello bitches"
+str fourth = "This bitch will have an escape character \" baby"
+char fifth = 'x'

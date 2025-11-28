@@ -34,6 +34,7 @@ private:
 
         tokens.clear();
 
+        bool escapeMode = false; // true if any escape character present
         bool commentMode = false; // true if currently parsing a comment
         bool stringMode = false; // true if currently parsing a string
         bool charMode = false; // true if currently parsing a character
@@ -41,17 +42,23 @@ private:
         for(int i = 0; i < sourceCode.length(); i++){
             char current = sourceCode.at(i);
 
+            if(!escapeMode && current == '\\'){
+                escapeMode = true; // TODO: this could lead to potential errors if there is a wild \ character
+                continue;
+            }
+
             if(current == '#' && !(stringMode || charMode || commentMode)){
                 currentToken.clear(); // TODO: have better error handling, this will cause problems in future, here just for initial testing purposes
                 commentMode = true;
                 continue;
             } // if # is found and we are not parsing a string, then the current token is a comment, so comment mode is turned on.
 
-            if(current == '"' && !(commentMode || charMode)){
+            if(current == '"' && !(commentMode || charMode || escapeMode)){
                 if(stringMode){
                     stringMode = false;
                     tokens.push_back(Token(LiteralType{_stringLit}, currentToken));
                     currentToken.clear();
+                    printTokens();
                     // if stringmode is on and " is found, it means the string is ending
                 }else{
                     currentToken.clear(); // TODO: have better error handling, this will cause problems in future, here just for initial testing purposes
@@ -61,7 +68,7 @@ private:
                 }
             } // if " is found and we are not parsing a comment, then the current token is a string, so string mode is turned on. there are two possibilities, either the string is starting or ending, both cases are handled inside the code.
 
-            if(current == '\'' && !(commentMode || stringMode)){
+            if(current == '\'' && !(commentMode || stringMode || escapeMode)){
                 if(charMode){
                     charMode = false;
                     if(currentToken.length() != 1){
@@ -78,7 +85,6 @@ private:
             }//same logic used for string parsing
 
             if(current == '\n'){
-                cout << "Newline character found: commentMode is " << (commentMode ? "on": "off") << endl;
                 if(commentMode){
                     commentMode = false;
                     tokens.push_back(Token(currentToken));
@@ -95,10 +101,9 @@ private:
             }// pushing in whitespaces
 
             currentToken.push_back(current);
+            escapeMode = false;
             
-            cout << "Parsed '" << current << "' Current Tokens: " << endl;
-            printTokens();
-            cout << endl;
+            cout << "Parsed '" << current << endl;
         }
     }
 
