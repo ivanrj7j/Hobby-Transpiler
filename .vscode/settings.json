@@ -2,6 +2,7 @@
     "files.associations": {
         "*.crngObj": "json",
         "*.crngScn": "json",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "stdexcept": "cpp"
     }
 }

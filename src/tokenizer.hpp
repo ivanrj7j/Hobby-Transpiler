@@ -83,8 +83,33 @@ private:
         if(currentToken == "]") return Token(DelimiterType{_sqClose});
         // delimiters 
 
-        return Token(currentToken);
-        // throw invalid_argument("The given token is invalid");
+        if(isdigit(currentToken.at(0))){
+            int totalDecimals = 0;
+            for(char x : currentToken){
+                if(!(isdigit(x) || x == '.')){
+                    cerr << "Invalid number(float/int) literal.\n";
+                    throw invalid_argument("Invalid number(float/int) literal.");
+                }
+                if(x == '.') totalDecimals++;
+            }
+            if(!(totalDecimals == 0 || totalDecimals == 1)){
+                cerr << "Invalid number(float/int) literal. Only one or zero . is permitted\n";
+                throw invalid_argument("Invalid number(float/int) literal. Only one or zero . is permitted\n");
+            }
+            LiteralType type = totalDecimals == 0 ? _intLit : _floatLit;
+            return Token(type, currentToken);
+        }else if(currentToken.at(0) == '_' || isalpha(currentToken.at(0))){
+            for(char x: currentToken){
+                if(!(x == '_' || isalnum(x))){
+                    cerr << "Identifiers must always start with a _ or an alphabet and contain only _ or alphabet or digits\n";
+                    throw invalid_argument("Identifiers must always start with a _ or an alphabet and contain only _ or alphabet or digits\n");
+                }
+            }
+            return Token::identifier(currentToken);
+        }
+
+        // return Token(currentToken);
+        throw invalid_argument("The given token is invalid");
     }
 
     void getTokens(){
@@ -245,17 +270,20 @@ public:
             case _literal:
                 cout << "\nLiteral: " << t.value << endl;
                 break;
-            case _whitespace:
-                cout << "Whitespace Type enum: " << t.token << endl;
-                break;
-            case _keyWord:
-                cout << "Keyword type: " << t.token << endl;
-                break;
-            case _operator:
-                cout << "Operator type: " << t.token << endl;
-                break;
-            case _delimiter:
-                cout << "Delimiter type: " << t.token << endl;
+            // case _whitespace:
+            //     cout << "Whitespace Type enum: " << t.token << endl;
+            //     break;
+            // case _keyWord:
+            //     cout << "Keyword type: " << t.token << endl;
+            //     break;
+            // case _operator:
+            //     cout << "Operator type: " << t.token << endl;
+            //     break;
+            // case _delimiter:
+            //     cout << "Delimiter type: " << t.token << endl;
+            //     break;
+            case _identifier:
+                cout << "\nIdentifier: " << t.value << endl;
                 break;
             }
         }

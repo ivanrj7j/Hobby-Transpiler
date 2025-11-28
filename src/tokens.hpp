@@ -34,6 +34,8 @@ class Token{
         string token;
 
     public:
+        Token(){};
+
         Token(KeyWordType keywordType){
             this->tokenType = _keyWord;
             this->keywordType = keywordType;
@@ -64,7 +66,7 @@ class Token{
             this->token = comment;
             this->tokenType = _comment;
         }
-
+        
         _Token get(){
             int16_t token;
             switch (this->tokenType){
@@ -85,9 +87,18 @@ class Token{
                 break;
             case _comment:
                 break;
+            case _identifier:
+                break;
             default:
                 throw invalid_argument("The type of token given is incorrect");
             }
             return _Token(this->tokenType, token, this->token);
+        }
+
+        static Token identifier(string name){
+            Token token;
+            token.tokenType = _identifier;
+            token.token = name;
+            return token;
         }
 };
