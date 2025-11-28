@@ -4,9 +4,9 @@
 using namespace std;
 
 enum TokenType {_keyWord, _identifier, _literal, _operator, _delimiter, _comment, _whitespace};
-enum KeyWordType {_if, _elif, _else, _for, _while, _return, _int, _float, _string, _char};
+enum KeyWordType {_if, _elif, _else, _for, _while, _do, _return, _break, _continue, _int, _float, _string, _char, _bool};
 enum LiteralType {_intLit, _floatLit, _stringLit, _charLit};
-enum OperatorType {_add, _sub, _mul, _div, _mod, _and, _or, _not, _eq, _neq};
+enum OperatorType {_add, _sub, _mul, _div, _mod, _pow, _and, _or, _not, _xor, _eq, _neq, _gte, _lte, _gt, _lt, _ass, _assAdd, _assSub, _assMul, _assDiv, _assMod, _assPow};
 enum DelimiterType {_bracketOpen, _bracketClose, _braceOpen, _braceClose, _sqOpen, _sqClose};
 enum WhiteSpaceType {_space, _tab, _newLine};
 
@@ -67,7 +67,7 @@ class Token{
 
         _Token get(){
             int16_t token;
-            switch (this->tokenType)            {
+            switch (this->tokenType){
             case _keyWord:
                 token = this->keywordType;
                 break;

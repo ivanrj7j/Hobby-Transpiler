@@ -28,8 +28,63 @@ private:
     }
 
     Token parseCurrentToken(string currentToken){
+        if(currentToken == "int") return Token(KeyWordType{_int});
+        if(currentToken == "char") return Token(KeyWordType{_char});
+        if(currentToken == "float") return Token(KeyWordType{_float});
+        if(currentToken == "string") return Token(KeyWordType{_string});
+        if(currentToken == "bool") return Token(KeyWordType{_bool});
+        if(currentToken == "if") return Token(KeyWordType{_if});
+        if(currentToken == "elif") return Token(KeyWordType{_elif});
+        if(currentToken == "else") return Token(KeyWordType{_else});
+        if(currentToken == "for") return Token(KeyWordType{_for});
+        if(currentToken == "while") return Token(KeyWordType{_while});
+        if(currentToken == "do") return Token(KeyWordType{_do});
+        if(currentToken == "return") return Token(KeyWordType{_return});
+        if(currentToken == "break") return Token(KeyWordType{_break});
+        if(currentToken == "continue") return Token(KeyWordType{_continue});
+        // keyword tokens 
 
-        return Token("Placeholder token: " + currentToken);
+        if(currentToken == "+") return Token(OperatorType{_add});
+        if(currentToken == "-") return Token(OperatorType{_sub});
+        if(currentToken == "*") return Token(OperatorType{_mul});
+        if(currentToken == "/") return Token(OperatorType{_div});
+        if(currentToken == "%") return Token(OperatorType{_mod});
+        if(currentToken == "**") return Token(OperatorType{_pow});
+        // arithmetic operators 
+
+        if(currentToken == "and" || currentToken == "&&") return Token(OperatorType{_and});
+        if(currentToken == "or" || currentToken == "||") return Token(OperatorType{_or});
+        if(currentToken == "!" || currentToken == "not") return Token(OperatorType{_not});
+        if(currentToken == "^" || currentToken == "xor") return Token(OperatorType{_xor});
+        // logical operators 
+
+        if(currentToken == "==") return Token(OperatorType{_eq});
+        if(currentToken == "!=") return Token(OperatorType{_neq});
+        if(currentToken == ">=") return Token(OperatorType{_gte});
+        if(currentToken == "<=") return Token(OperatorType{_lte});
+        if(currentToken == ">") return Token(OperatorType{_gt});
+        if(currentToken == "<") return Token(OperatorType{_lt});
+        // comparison operators 
+
+        if(currentToken == "=") return Token(OperatorType{_ass});
+        if(currentToken == "+=") return Token(OperatorType{_assAdd});
+        if(currentToken == "-=") return Token(OperatorType{_assSub});
+        if(currentToken == "*=") return Token(OperatorType{_assMul});
+        if(currentToken == "/=") return Token(OperatorType{_assDiv});
+        if(currentToken == "%=") return Token(OperatorType{_assMod});
+        if(currentToken == "**=") return Token(OperatorType{_assPow});
+        // assignment operators 
+
+        if(currentToken == "(") return Token(DelimiterType{_bracketOpen});
+        if(currentToken == ")") return Token(DelimiterType{_bracketClose});
+        if(currentToken == "{") return Token(DelimiterType{_braceOpen});
+        if(currentToken == "}") return Token(DelimiterType{_braceClose});
+        if(currentToken == "[") return Token(DelimiterType{_sqOpen});
+        if(currentToken == "]") return Token(DelimiterType{_sqClose});
+        // delimiters 
+
+        return Token(currentToken);
+        // throw invalid_argument("The given token is invalid");
     }
 
     void getTokens(){
@@ -63,6 +118,7 @@ private:
                     stringMode = false;
                     tokens.push_back(Token(LiteralType{_stringLit}, currentToken));
                     currentToken.clear();
+                    continue;
                     // if stringmode is on and " is found, it means the string is ending
                 }else{
                     currentToken.clear(); // TODO: have better error handling, this will cause problems in future, here just for initial testing purposes
@@ -81,6 +137,7 @@ private:
                     }// if the given character token does not have one character, then it is invalid.
                     tokens.push_back(Token(LiteralType{_charLit}, currentToken));
                     currentToken.clear();
+                    continue;
                 }else{
                     currentToken.clear(); // TODO: have better error handling, this will cause problems in future, here just for initial testing purposes
                     charMode = true;
@@ -135,13 +192,36 @@ private:
                     break;
                 case '"':
                     break;
+                case '\\':
+                    break;
                 default:
                     cerr << "Invalid character after \\ (escape character).";
                     throw invalid_argument("Invalid character after \\ (escape character).");
                 }
                 escapeMode = false;
-            }
-            currentToken.push_back(current);
+            }// formatting escape characters
+
+            currentToken.push_back(current); // pushing the current character to the 
+
+            if(!(commentMode || stringMode || charMode)){
+                WhiteSpaceType whitespace;
+                switch (current)
+                {
+                case '\n':
+                    whitespace = _newLine;
+                    break;
+                case '\t':
+                    whitespace = _tab;
+                    break;
+                case ' ':
+                    whitespace = _space;
+                    break;
+                }
+                if(current == '\n' || current == '\t' || current == ' '){
+                    tokens.push_back(Token(whitespace));
+                    currentToken.clear();
+                }
+            }//parsing whitespace tokens
         }
     }
 
@@ -167,6 +247,15 @@ public:
                 break;
             case _whitespace:
                 cout << "Whitespace Type enum: " << t.token << endl;
+                break;
+            case _keyWord:
+                cout << "Keyword type: " << t.token << endl;
+                break;
+            case _operator:
+                cout << "Operator type: " << t.token << endl;
+                break;
+            case _delimiter:
+                cout << "Delimiter type: " << t.token << endl;
                 break;
             }
         }
