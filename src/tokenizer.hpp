@@ -27,6 +27,11 @@ private:
         return content.str();
     }
 
+    Token parseCurrentToken(string currentToken){
+
+        return Token("Placeholder token: " + currentToken);
+    }
+
     void getTokens(){
         string sourceCode = readCode();
         string currentToken;
@@ -93,8 +98,12 @@ private:
             }// terminating a comment
 
             if(!(commentMode || charMode || stringMode) && (current == '\t' || current == ' ')){
-                WhiteSpaceType type = _space;
-                if(current == '\t') type = _tab;
+                WhiteSpaceType type = _tab;
+                if(current == ' '){
+                    type = _space;
+                    tokens.push_back(parseCurrentToken(currentToken));
+                    currentToken.clear();
+                }
                 tokens.push_back(Token(type));
                 continue;
             }// pushing in whitespaces
