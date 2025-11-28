@@ -4,7 +4,7 @@
 using namespace std;
 
 enum TokenType {_keyWord, _identifier, _literal, _operator, _delimiter, _comment, _whitespace};
-enum KeyWordType {_if, _elif, _else, _for, _while, _return, _int, _float, _string};
+enum KeyWordType {_if, _elif, _else, _for, _while, _return, _int, _float, _string, _char};
 enum LiteralType {_intLit, _floatLit, _stringLit, _charLit};
 enum OperatorType {_add, _sub, _mul, _div, _mod, _and, _or, _not, _eq, _neq};
 enum DelimiterType {_bracketOpen, _bracketClose, _braceOpen, _braceClose, _sqOpen, _sqClose};
@@ -34,10 +34,9 @@ class Token{
         string token;
 
     public:
-        Token(KeyWordType keywordType, string token){
+        Token(KeyWordType keywordType){
             this->tokenType = _keyWord;
             this->keywordType = keywordType;
-            this->token = token;
         }
 
         Token(LiteralType literalType, string token){
