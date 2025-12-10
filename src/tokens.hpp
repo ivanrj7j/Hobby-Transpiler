@@ -41,10 +41,10 @@ class Token{
             this->keywordType = keywordType;
         }
 
-        Token(LiteralType literalType, string token){
+        Token(LiteralType literalType, string value){
             this->literalType = literalType;
             this->tokenType = _literal;
-            this->token = token;
+            this->token = value;
         }
 
         Token(OperatorType operatorType){
