@@ -1,5 +1,6 @@
-#include "tokenizer.hpp"
 #include <iostream>
+#include "tokenizer.hpp"
+
 using namespace std;
 
 int main(int argc, char* argv[])
