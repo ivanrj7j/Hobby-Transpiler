@@ -65,10 +65,10 @@ enum WhiteSpaceType { _space,
 class _Token {
 public:
     TokenType tokenType;
-    int16_t token;
+    int token;
     string value;
 
-    _Token(TokenType tokenType, int16_t token, string value)
+    _Token(TokenType tokenType, int token, string value)
     {
         this->tokenType = tokenType;
         this->token = token;
@@ -136,7 +136,7 @@ public:
 
     _Token get()
     {
-        int16_t token;
+        int token;
         switch (this->tokenType) {
         case _keyWord:
             token = this->keywordType;

@@ -31,6 +31,7 @@ public:
 
     void print()
     {
+        string whitespaces[] = { "space", "\\t", "\\n" };
         _Token t = token.get();
         switch (t.tokenType) {
         case _comment:
@@ -40,7 +41,7 @@ public:
             cout << "Literal: " << t.value << endl;
             break;
         case _whitespace:
-            cout << "Whitespace Type enum: " << t.token << endl;
+            cout << "Whitespace: " << whitespaces[t.token] << endl;
             break;
         case _keyWord:
             cout << "Keyword type: " << t.token << endl;
@@ -58,5 +59,20 @@ public:
             cout << "Expression" << endl;
             break;
         }
+    }
+
+    TokenType getTokenType()
+    {
+        return this->token.get().tokenType;
+    }
+
+    int getToken()
+    {
+        return this->token.get().token;
+    }
+
+    string getTokenValue()
+    {
+        return this->token.get().value;
     }
 };

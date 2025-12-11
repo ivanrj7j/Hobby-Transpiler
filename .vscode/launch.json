@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug HoPiler",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\build\\HoPiler.exe",
+            "args": [
+                "programTest/test.ho"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "preLaunchTask": "cmakeBuild",
+            "externalConsole": true
+        }
+    ]
+}
