@@ -9,7 +9,8 @@ enum TokenType { _keyWord,
     _operator,
     _delimiter,
     _comment,
-    _whitespace };
+    _whitespace,
+    _expression };
 enum KeyWordType { _if,
     _elif,
     _else,
@@ -86,7 +87,10 @@ private:
     string token;
 
 public:
-    Token() { };
+    Token() 
+    {
+        this->tokenType = _expression;
+    }
 
     Token(KeyWordType keywordType)
     {
@@ -147,6 +151,8 @@ public:
         case _comment:
             break;
         case _identifier:
+            break;
+        case _expression:
             break;
         default:
             throw invalid_argument("The type of token given is incorrect");

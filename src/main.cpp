@@ -1,5 +1,6 @@
 #include <iostream>
 #include "tokenizer.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ int main(int argc, char* argv[])
 
     string fileName = string(argv[1]);
     Tokenizer tokenizer(fileName);
+    Parser parser(tokenizer.getTokens());
 
     return EXIT_SUCCESS;
 }

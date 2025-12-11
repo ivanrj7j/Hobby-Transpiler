@@ -159,7 +159,7 @@ private:
         throw invalid_argument("The given token('" + currentToken + "') is invalid");
     }
 
-    void getTokens()
+    void _getTokens()
     {
         string sourceCode = readCode();
         string currentToken;
@@ -310,7 +310,7 @@ private:
             } catch (const std::exception& e) {
                 cout << "\n\n=====\nIssue with compiling: " << e.what() << "\n=====\n";
             }
-        }//pushing the final token
+        } // pushing the final token
     }
 
 public:
@@ -318,9 +318,14 @@ public:
     {
         this->fileName = fileName;
         cout << "Initialized Tokenizer" << endl;
-        this->getTokens();
+        this->_getTokens();
         cout << "Tokens generated:" << endl;
         printTokens();
+    }
+
+    vector<Token> getTokens()
+    {
+        return this->tokens;
     }
 
     void printTokens()
@@ -351,10 +356,5 @@ public:
                 break;
             }
         }
-    }
-
-    ~Tokenizer()
-    {
-        cout << "Exiting...";
     }
 };
