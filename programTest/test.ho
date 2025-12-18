@@ -1,16 +1,16 @@
 # This is a comment
 #This is another comment with a ' and # and "
 
-str first = "Hello world!"
+string first = "Hello world!"
 str second = "#Hello world"
-str third = "'Hello bitches"
+string third = "'Hello bitches"
 str fourth = "This bitch will have an escape character \" baby"
 char fifth = 'x'
-char seventh = 'a'
-char eigth = '\''
-string ninth = "Testing this new feature with a \", then \n \t Tab and space"
-char tenth = '\n'
-char eleventh = '\t'
+char sixth = 'a'
+char seventh = '\''
+string eigth = "Testing this new feature with a \", then \n \t Tab and space"
+char ninth = '\n'
+char tenth = '\t'
 
 int value = 69
 float v2 = 90.63

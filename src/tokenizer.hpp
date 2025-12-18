@@ -36,7 +36,7 @@ private:
             return Token(KeyWordType { _char });
         if (currentToken == "float")
             return Token(KeyWordType { _float });
-        if (currentToken == "string")
+        if (currentToken == "string" || currentToken == "str")
             return Token(KeyWordType { _string });
         if (currentToken == "bool")
             return Token(KeyWordType { _bool });
