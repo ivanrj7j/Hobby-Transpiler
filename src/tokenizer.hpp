@@ -1,3 +1,21 @@
+/**
+ * @file tokenizer.hpp
+ * @brief Lexical analyzer for the HoPiler transpiler
+ * 
+ * The Tokenizer class performs lexical analysis, converting raw source code into a stream
+ * of tokens. It handles:
+ * - Keyword recognition
+ * - Operator and delimiter recognition
+ * - Literal parsing (integers, floats, strings, characters)
+ * - Identifier validation
+ * - Comment and whitespace handling
+ * - Escape sequence processing
+ * 
+ * This is the first phase of the transpilation pipeline.
+ * 
+ * @author HoPiler Project
+ */
+
 #pragma once
 
 #include "tokens.hpp"
@@ -9,12 +27,41 @@
 
 using namespace std;
 
+/**
+ * @class Tokenizer
+ * @brief Lexical analyzer that converts source code into tokens
+ * 
+ * The Tokenizer reads a HoPiler source file and breaks it down into a sequence of tokens.
+ * Each token represents a logical unit of the source code (keyword, operator, literal, etc.).
+ * 
+ * Supported features:
+ * - Line comments (starting with #)
+ * - String literals (double-quoted, with escape sequences)
+ * - Character literals (single-quoted, with validation)
+ * - Integer and float literals
+ * - Identifiers (must start with _ or letter)
+ * - All keywords, operators, and delimiters defined in tokens.hpp
+ * 
+ * The tokenizer maintains parsing state to handle nested constructs (strings within comments, etc.)
+ * and validates tokens according to HoPiler language rules.
+ * 
+ * @see Token
+ * @see Parser
+ */
 class Tokenizer {
 
 private:
     string fileName;
     vector<Token> tokens;
 
+    /**
+     * @brief Reads the entire source file into memory
+     * 
+     * @return The complete file contents as a string
+     * 
+     * Opens and reads the file specified in fileName. Returns the entire file contents
+     * as a single string, which is then processed character-by-character by _getTokens().
+     */
     string readCode()
     {
         stringstream content;
@@ -28,6 +75,26 @@ private:
         return content.str();
     }
 
+    /**
+     * @brief Parses a single token string and returns the appropriate Token object
+     * 
+     * @param currentToken The token string to parse
+     * @return A Token object of the appropriate type (keyword, operator, literal, etc.)
+     * @throws invalid_argument if the token is not recognized or is malformed
+     * 
+     * This method identifies what type of token the string represents and creates
+     * the corresponding Token object. It handles:
+     * - Keywords: if, elif, else, for, while, etc.
+     * - Operators: +, -, *, /, &&, ||, =, +=, etc.
+     * - Delimiters: (), {}, []
+     * - Literals: Numbers (int/float validation), strings, characters
+     * - Identifiers: Names starting with _ or letter, containing only alphanumeric/_
+     * 
+     * Validation rules:
+     * - Float/int literals: Can contain digits and at most one decimal point
+     * - Identifiers: Must start with _ or letter; can only contain alphanumeric and _
+     * - Characters: Already validated by _getTokens() to be exactly 1 character
+     */
     Token parseCurrentToken(string currentToken)
     {
         if (currentToken == "int")
@@ -159,6 +226,41 @@ private:
         throw invalid_argument("The given token('" + currentToken + "') is invalid");
     }
 
+    /**
+     * @brief Main tokenization loop - converts source code to token stream
+     * 
+     * This method implements the core tokenization algorithm that:
+     * 1. Reads the entire source code via readCode()
+     * 2. Iterates through each character
+     * 3. Maintains parsing state flags for comments, strings, characters, and escape sequences
+     * 4. Accumulates characters into tokens
+     * 5. Calls parseCurrentToken() when token boundaries are reached
+     * 6. Produces tokens representing:
+     *    - Keywords, operators, delimiters, literals, identifiers
+     *    - Comments and whitespace
+     * 
+     * State tracking:
+     * - escapeMode: True when the previous character was a backslash
+     * - commentMode: True when parsing a comment (until end of line)
+     * - stringMode: True when parsing a string literal (between quotes)
+     * - charMode: True when parsing a character literal (between single quotes)
+     * 
+     * Special handling:
+     * - Escape sequences: \\n, \\t, \\r, \\b, \\v, \\f, \\0, \\', \\", \\\\
+     * - Comments: Start with # and continue until newline
+     * - Strings: Enclosed in double quotes, can contain escape sequences
+     * - Characters: Enclosed in single quotes, must be exactly 1 character (or escape sequence)
+     * - Newlines: Act as statement delimiters in the language
+     * 
+     * Error handling:
+     * - Catches exceptions from parseCurrentToken() but continues processing
+     * - Validates character literal length
+     * - Validates escape sequences
+     * - Validates number literals (only one decimal point)
+     * 
+     * @note The method clears the tokens vector at the start
+     * @note Errors are caught and printed but don't stop tokenization
+     */
     void _getTokens()
     {
         string sourceCode = readCode();
@@ -314,6 +416,19 @@ private:
     }
 
 public:
+    /**
+     * @brief Constructor - initializes tokenizer and tokenizes the input file
+     * 
+     * @param fileName Path to the HoPiler source file to tokenize (.ho extension expected)
+     * 
+     * Upon construction:
+     * 1. Stores the filename
+     * 2. Calls _getTokens() to tokenize the file
+     * 3. Prints initialization message
+     * 4. Prints all generated tokens via printTokens()
+     * 
+     * Example: Tokenizer tokenizer("program.ho");
+     */
     Tokenizer(string fileName)
     {
         this->fileName = fileName;
@@ -323,11 +438,34 @@ public:
         printTokens();
     }
 
+    /**
+     * @brief Gets the vector of parsed tokens
+     * 
+     * @return The tokens vector
+     * 
+     * Returns all tokens that were generated during tokenization.
+     * This is typically called by the Parser to get the token stream for syntax analysis.
+     */
     vector<Token> getTokens()
     {
         return this->tokens;
     }
 
+    /**
+     * @brief Prints all tokens to standard output in human-readable format
+     * 
+     * Iterates through all tokens and prints information about each:
+     * - Comments: "Comment: [value]"
+     * - Literals: "Literal: [value]"
+     * - Whitespace: "Whitespace Type enum: [enum value]"
+     * - Keywords: "Keyword type: [enum value]"
+     * - Operators: "Operator type: [enum value]"
+     * - Delimiters: "Delimiter type: [enum value]"
+     * - Identifiers: "Identifier: [value]"
+     * 
+     * This is useful for debugging the tokenization process and verifying that
+     * the input was tokenized correctly.
+     */
     void printTokens()
     {
         for (Token token : tokens) {

@@ -3,8 +3,8 @@
 
 string first = "Hello world!"
 str second = "#Hello world"
-string third = "'Hello bitches"
-str fourth = "This bitch will have an escape character \" baby"
+string third = "'Hello hi"
+str fourth = "This will have an escape character \" baby"
 char fifth = 'x'
 char sixth = 'a'
 char seventh = '\''
@@ -13,6 +13,7 @@ char ninth = '\n'
 char tenth = '\t'
 
 int value = 69
+int hello = (69 + 420) * 32 / (2^2 - 9)
 float v2 = 90.63
 float _v3 = 3.1415
 #This is the final comment
