@@ -27,6 +27,8 @@ private:
         return false;
     }
 
+
+
     void parseTree()
     {
         vector<ExpressionNode> operandStack;
@@ -44,7 +46,7 @@ private:
             // TODO: create a postfix to infix style conversion of expression instead of the current hardcoded assignment only.
             if (t.tokenType == _whitespace) {
                 // handling a new line, newline acts as a delimiter like ; in c/c++
-                if (operandStack.size() >= 3 && expressionStack.size() >= 1) {
+                if (operandStack.size() >= 3 && expressionStack.size() >= 1 && expressionStack.at(expressionStack.size()-1).getTokenType() == _operator && expressionStack.at(expressionStack.size()-1).getToken() == _ass) {
                     ExpressionNode op = expressionStack.at(expressionStack.size() - 1);
                     expressionStack.pop_back();
 
@@ -70,12 +72,17 @@ private:
                     op.addChild(literal);
 
                     head.addChild(op);
+                    expressionStack.clear();
+                    operandStack.clear();
                 }
             } else if (t.tokenType == _literal || t.tokenType == _identifier || (t.tokenType == _keyWord && (t.token >= _int && t.token <= _bool))) {
                 // handling datatype declarations, identifiers and literals.
                 operandStack.push_back(node);
             } else if (t.tokenType == _operator) {
-                expressionStack.push_back(node);
+                if(t.token == _ass || t.token == _assAdd || t.token == _assDiv || t.token == _assMod || t.token == _assMul || t.token == _assPow || t.token == _assSub){
+                    expressionStack.push_back(node);
+                    // for assignment operators 
+                }
             }
         }
     }
