@@ -19,8 +19,9 @@ private:
             { _float, _floatLit }
         };
 
-        for(int i = 0; i < 4; i++){
-            if(keyword == validPairs[i][0] && literal == validPairs[i][1]) return true;
+        for (int i = 0; i < 4; i++) {
+            if (keyword == validPairs[i][0] && literal == validPairs[i][1])
+                return true;
         }
 
         return false;
@@ -34,50 +35,47 @@ private:
         for (Token token : tokens) {
             _Token t = token.get();
 
-            if (t.tokenType == _comment)
+            if (t.tokenType == _comment || (t.tokenType == _whitespace && (t.token == _space || t.token == _tab)))
                 continue;
 
             ExpressionNode node(token);
             node.print();
 
             // TODO: create a postfix to infix style conversion of expression instead of the current hardcoded assignment only.
-            if (t.tokenType == _operator) {
-                expressionStack.push_back(node);
-                cout << "Pushed ";
-                node.print();
-            } else if (t.tokenType == _whitespace) {
-                if(expressionStack.empty() || t.token != _newLine) continue;
-                ExpressionNode op = expressionStack.at(expressionStack.size() - 1);
-                expressionStack.pop_back();
-                if (op.getTokenType() == _operator) {
-                    if (op.getToken() == _ass) {
-                        ExpressionNode c = operandStack.at(operandStack.size() - 1);
-                        operandStack.pop_back();
+            if (t.tokenType == _whitespace) {
+                // handling a new line, newline acts as a delimiter like ; in c/c++
+                if (operandStack.size() >= 3 && expressionStack.size() >= 1) {
+                    ExpressionNode op = expressionStack.at(expressionStack.size() - 1);
+                    expressionStack.pop_back();
 
-                        ExpressionNode b = operandStack.at(operandStack.size() - 1);
-                        operandStack.pop_back();
+                    ExpressionNode literal = operandStack.at(operandStack.size() - 1);
+                    operandStack.pop_back();
 
-                        ExpressionNode a = operandStack.at(operandStack.size() - 1);
-                        operandStack.pop_back();
-                         
-                        if (c.getTokenType() == _literal && b.getTokenType() == _identifier && a.getTokenType() == _keyWord) {
-                            int typeToken = a.getToken();
-                            int valueToken = c.getToken();
+                    ExpressionNode varName = operandStack.at(operandStack.size() - 1);
+                    operandStack.pop_back();
 
+                    ExpressionNode dataType = operandStack.at(operandStack.size() - 1);
+                    operandStack.pop_back();
 
-                            if(isValidKeywordLiteralPair(typeToken, valueToken)){
-                                op.addChild(b);
-                                op.addChild(c);
-                                head.addChild(op);
-                            }
-                        }
+                    if (!isValidKeywordLiteralPair(dataType.getToken(), literal.getToken())) {
+                        cerr << "Invalid assignment on type " << dataType.getToken() << " with " << literal.getToken() << endl;
+                        dataType.print();
+                        literal.print();
+                        varName.print();
+                        cerr << endl;
+                        throw invalid_argument("Invalid assignment");
                     }
-                }
 
-            } else {
+                    op.addChild(varName);
+                    op.addChild(literal);
+
+                    head.addChild(op);
+                }
+            } else if (t.tokenType == _literal || t.tokenType == _identifier || (t.tokenType == _keyWord && (t.token >= _int && t.token <= _bool))) {
+                // handling datatype declarations, identifiers and literals.
                 operandStack.push_back(node);
-                cout << "Pushed operator ";
-                node.print();
+            } else if (t.tokenType == _operator) {
+                expressionStack.push_back(node);
             }
         }
     }
@@ -96,7 +94,7 @@ public:
         , head(Token())
     {
         cout << "Received " << tokens.size() << " tokens." << endl;
-        cout << "Parsing tree" << endl;
+        cout << "\n\n=====\nParsing tree\n=====\n";
         parseTree();
         cout << "Tree parsed" << endl;
         printTree();
